@@ -87,23 +87,25 @@ public class LaneStatusView implements ActionListener, Observer {
 	public void actionPerformed( ActionEvent e ) {
 		if ( lane.isPartyAssigned() ) { 
 			if (e.getSource().equals(viewPinSetter)) {
-				if ( psShowing == false ) {
-					psv.show();
-					psShowing=true;
-				} else if ( psShowing == true ) {
+				if (psShowing) {
 					psv.hide();
 					psShowing=false;
+				}
+				else{
+					psv.show();
+					psShowing=true;
 				}
 			}
 		}
 		if (e.getSource().equals(viewLane)) {
 			if ( lane.isPartyAssigned() ) { 
-				if ( laneShowing == false ) {
-					lv.show();
-					laneShowing=true;
-				} else if ( laneShowing == true ) {
+				if (laneShowing) {
 					lv.hide();
 					laneShowing=false;
+				}
+				else{
+					lv.show();
+					laneShowing=true;
 				}
 			}
 		}
@@ -133,6 +135,7 @@ public class LaneStatusView implements ActionListener, Observer {
 				int result = egp.getResult();
 				egp.distroy();
 				egp = null;	
+
 				if (result == 1) {					// yes, want to play again
 					lane.resetScores();
 					lane.resetBowlerIterator();
@@ -162,12 +165,12 @@ public class LaneStatusView implements ActionListener, Observer {
 			if ( le.isGameIsHalted() ) {
 				maintenance.setBackground( Color.RED );
 			}	
-			if ( lane.isPartyAssigned() == false ) {
-				viewLane.setEnabled( false );
-				viewPinSetter.setEnabled( false );
-			} else {
+			if (lane.isPartyAssigned()) {
 				viewLane.setEnabled( true );
 				viewPinSetter.setEnabled( true );
+			} else {
+				viewLane.setEnabled( false );
+				viewPinSetter.setEnabled( false );
 			}
 		}
 	}	
