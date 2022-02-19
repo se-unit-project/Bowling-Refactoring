@@ -4,6 +4,7 @@ import java.util.*;
 
 public class Lane extends Observable implements Observer, Runnable {
 
+	public static final int NUMBER_OF_PINS = 10;
 	private Party party;
 	private Pinsetter setter;
 	private HashMap scores;
@@ -47,7 +48,7 @@ public class Lane extends Observable implements Observer, Runnable {
 			if (partyAssigned && !gameFinished) {	// we have a party on this lane, so next bower can take a throw
 				while (gameIsHalted) {
 					try {
-						Thread.sleep(10);
+						Thread.sleep(NUMBER_OF_PINS);
 					} catch (Exception e) {}
 				}
 				if (bowlerIterator.hasNext()) {
@@ -55,10 +56,12 @@ public class Lane extends Observable implements Observer, Runnable {
 					canThrowAgain = true;
 					tenthFrameStrike = false;
 					ball = 0;
+
 					while (canThrowAgain) {
 						setter.ballThrown();		// simulate the thrower's ball hiting
 						ball++;
 					}
+
 					if (frameNumber == 9){
 						try{
 							Date date = new Date();
@@ -68,7 +71,8 @@ public class Lane extends Observable implements Observer, Runnable {
 					}
 					setter.reset();
 					bowlIndex++;
-				} else {
+				}
+				else {
 					frameNumber++;
 					resetBowlerIterator();
 					bowlIndex = 0;
@@ -83,7 +87,7 @@ public class Lane extends Observable implements Observer, Runnable {
 				publish();
 			}
 			try {
-				Thread.sleep(10);
+				Thread.sleep(NUMBER_OF_PINS);
 			} catch (Exception e) {}
 		}
 	}
@@ -137,7 +141,7 @@ public class Lane extends Observable implements Observer, Runnable {
 		party = theParty;
 		resetBowlerIterator();
 		partyAssigned = true;
-		cumulScores = new int[party.getMembers().size()][10];
+		cumulScores = new int[party.getMembers().size()][NUMBER_OF_PINS];
 		this.sc = new ScoreCalculator(cumulScores);
 		gameNumber = 0;
 		resetScores();
@@ -284,16 +288,16 @@ public class Lane extends Observable implements Observer, Runnable {
 		// next logic handles the ?: what conditions dont allow them another throw?
 		// handle the case of 10th frame first
 		if (frameNumber == 9) {
-			if (pe.totalPinsDown() == 10) {
+			if (pe.totalPinsDown() == NUMBER_OF_PINS) {
 				setter.resetPins();
 				if(pe.getThrowNumber() == 1) {
 					tenthFrameStrike = true;
 				}
 			}
-			if ((pe.totalPinsDown() != 10) && (pe.getThrowNumber() == 2 && tenthFrameStrike == false) || pe.getThrowNumber() == 3) {
+			if ((pe.totalPinsDown() != NUMBER_OF_PINS) && (pe.getThrowNumber() == 2 && tenthFrameStrike == false) || pe.getThrowNumber() == 3) {
 				canThrowAgain = false;
 			}
-		} else if (pe.pinsDownOnThisThrow() == 10 || pe.getThrowNumber() == 2) {		// threw a strike
+		} else if (pe.pinsDownOnThisThrow() == NUMBER_OF_PINS || pe.getThrowNumber() == 2) {		// threw a strike
 			canThrowAgain = false;
 		}
 	}
